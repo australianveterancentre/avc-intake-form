@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Intake Form — Australian Veteran Centre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #FAFAFA;
+      --black: #2B2B2B;
+      --light: #F1F1F1;
+      --red: #780505;
+      --navy: #053F78;
+      --mid-grey: #6B6B6B;
+      --border: #D0D0D0;
+      --radius: 4px;
+      --font-body: 'Hanken Grotesk', sans-serif;
+      --font-display: 'Anton', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--light);
+      color: var(--black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .site-header {
+      background: var(--navy);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .site-header img {
+      height: 52px;
+      width: auto;
+    }
+    .site-header-text h1 {
+      font-family: var(--font-display);
+      color: var(--white);
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .site-header-text p {
+      color: rgba(250,250,250,0.7);
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+
+    /* Progress */
+    .progress-bar-wrap {
+      background: var(--navy);
+      padding: 0 24px 20px;
+    }
+    .progress-steps {
+      display: flex;
+      gap: 6px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .progress-step {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 2px;
+      transition: background 0.3s;
+    }
+    .progress-step.done { background: var(--red); }
+    .progress-step.active { background: var(--white); }
+
+    .progress-label {
+      text-align: center;
+      color: rgba(250,250,250,0.8);
+      font-size: 0.75rem;
+      margin-top: 8px;
+      font-family: var(--font-body);
+    }
+
+    /* Main */
+    main {
+      flex: 1;
+      padding: 32px 16px 48px;
+    }
+    .form-card {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 36px 32px;
+    }
+    @media (max-width: 520px) {
+      .form-card { padding: 28px 20px; }
+    }
+
+    /* Step header */
+    .step-header {
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--light);
+      padding-bottom: 20px;
+    }
+    .step-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 6px;
+    }
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      letter-spacing: 0.03em;
+      color: var(--navy);
+      text-transform: uppercase;
+    }
+    .step-desc {
+      margin-top: 8px;
+      color: var(--mid-grey);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    /* Form fields */
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+    .field label .opt {
+      font-weight: 400;
+      color: var(--mid-grey);
+      margin-left: 4px;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      color: var(--black);
+      background: var(--white);
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(5,63,120,0.12);
+    }
+    .field input.error,
+    .field select.error,
+    .field textarea.error {
+      border-color: var(--red);
+    }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%232B2B2B' stroke-width='1.5' fill='none' stroke-linecap='square'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+    .field textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+    .field-hint {
+      font-size: 0.76rem;
+      color: var(--mid-grey);
+      margin-top: 5px;
+      line-height: 1.4;
+    }
+    .field-error {
+      font-size: 0.76rem;
+      color: var(--red);
+      margin-top: 5px;
+      display: none;
+    }
+    .field input.error ~ .field-error,
+    .field select.error ~ .field-error,
+    .field textarea.error ~ .field-error { display: block; }
+
+    /* Radio / checkbox groups */
+    .radio-group, .check-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radio-group.inline, .check-group.inline {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .radio-opt, .check-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .radio-opt input, .check-opt input {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      accent-color: var(--navy);
+      cursor: pointer;
+    }
+
+    /* Dynamic list (deployments/postings) */
+    .dynamic-list { margin-bottom: 8px; }
+    .dynamic-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: flex-start;
+    }
+    .dynamic-item input { flex: 1; }
+    .btn-remove {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      cursor: pointer;
+      color: var(--mid-grey);
+      font-size: 1rem;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-remove:hover { border-color: var(--red); color: var(--red); }
+    .btn-add-more {
+      background: none;
+      border: 1px dashed var(--navy);
+      border-radius: var(--radius);
+      padding: 9px 16px;
+      cursor: pointer;
+      color: var(--navy);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      transition: background 0.2s;
+    }
+    .btn-add-more:hover { background: rgba(5,63,120,0.06); }
+
+    /* Conditional block */
+    .conditional { display: none; margin-top: 14px; }
+    .conditional.visible { display: block; }
+
+    /* Section divider */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--light);
+      margin: 24px 0;
+    }
+
+    /* Consent */
+    .consent-block {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-top: 8px;
+    }
+    .consent-block p {
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--mid-grey);
+      margin-bottom: 12px;
+    }
+
+    /* Navigation */
+    .form-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--light);
+      gap: 12px;
+    }
+    .btn-back {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 24px;
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--mid-grey);
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-back:hover { border-color: var(--black); color: var(--black); }
+    .btn-next {
+      background: var(--red);
+      border: none;
+      border-radius: var(--radius);
+      padding: 13px 32px;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--white);
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: auto;
+    }
+    .btn-next:hover { background: #5e0404; }
+    .btn-next:disabled { background: var(--border); cursor: not-allowed; }
+
+    /* Success screen */
+    .success-screen {
+      text-align: center;
+      padding: 16px 0;
+    }
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--navy);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .success-icon svg { width: 32px; height: 32px; }
+    .success-screen h2 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--navy);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .success-screen p {
+      color: var(--mid-grey);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      max-width: 420px;
+      margin: 0 auto 8px;
+    }
+
+    /* Error banner */
+    .error-banner {
+      background: #fff0f0;
+      border: 1px solid #ffc0c0;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 0.84rem;
+      color: var(--red);
+      display: none;
+    }
+
+    /* Spinner */
+    .btn-next .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Footer */
+    .site-footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: var(--mid-grey);
+    }
+
+    /* Step visibility */
+    .step { display: none; }
+    .step.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <img
+      src="https://images.squarespace-cdn.com/content/v1/691e619de2449a38cba0ea8c/4042ff94-c794-4477-bcf8-2bb8f225798b/2.png"
+      alt="Australian Veteran Centre"
+      onerror="this.style.display='none'"
+    >
+    <div class="site-header-text">
+      <h1>Australian Veteran Centre</h1>
+      <p>Client Intake Form</p>
+    </div>
+  </header>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-steps" id="progressSteps"></div>
+    <p class="progress-label" id="progressLabel"></p>
+  </div>
+
+  <main>
+    <div class="form-card">
+      <div class="error-banner" id="errorBanner"></div>
+
+      <!-- ── STEP 1: About You ── -->
+      <div class="step active" data-step="1">
+        <div class="step-header">
+          <p class="step-label">Step 1 of 6</p>
+          <h2 class="step-title">About You</h2>
+          <p class="step-desc">Your personal details. Fields marked with * are required.</p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="full_name">Full Name *</label>
+            <input type="text" id="full_name" name="full_name" placeholder="As it appears on your ID" required>
+            <p class="field-error">Full name is required.</p>
+          </div>
+          <div class="field">
+            <label for="preferred_name">Preferred Name <span class="opt">(optional)</span></label>
+            <input type="text" id="preferred_name" name="preferred_name" placeholder="What you'd like us to call you">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="dob">Date of Birth *</label>
+            <input type="date" id="dob" name="dob" required>
+            <p class="field-error">Date of birth is required.</p>
+          </div>
+          <div class="field">
+            <label for="gender">Gender *</label>
+            <select id="gender" name="gender" required>
+              <option value="">Select…</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Non-binary">Non-binary</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+            <p class="field-error">Please select a gender.</p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="phone_mobile">Mobile Phone *</label>
+            <input type="tel" id="phone_mobile" name="phone_mobile" placeholder="04XX XXX XXX" required>
+            <p class="field-error">Mobile number is required.</p>
+          </div>
+          <div class="field">
+            <label for="phone_home">Home Phone <span class="opt">(optional)</span></label>
+            <input type="tel" id="phone_home" name="phone_home" placeholder="08 XXXX XXXX">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email Address *</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+          <p class="field-error">A valid email address is required.</p>
+        </div>
+
+        <div class="field">
+          <label for="address">Residential Address *</label>
+          <textarea id="address" name="address" placeholder="Street address, suburb, state, postcode" rows="3" required></textarea>
+          <p class="field-error">Address is required.</p>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Your Service ── -->
+      <div class="step" data-step="2">
+        <div class="step-header">
+          <p class="step-label">Step 2 of 6</p>
+          <h2 class="step-title">Your Service</h2>
+          <p class="step-desc">Your ADF service history, deployments, and postings.</p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="pmkeys">PMKeyS Number *</label>
+            <input type="text" id="pmkeys" name="pmkeys" placeholder="7-digit service number" required>
+            <p class="field-hint">Your unique ADF identification number.</p>
+            <p class="field-error">PMKeyS number is required.</p>
+          </div>
+          <div class="field">
+            <label for="branch">Branch *</label>
+            <select id="branch" name="branch" required>
+              <option value="">Select…</option>
+              <option value="Army">Army</option>
+              <option value="Navy">Navy</option>
+              <option value="Air Force">Air Force</option>
+              <option value="Other">Other</option>
+            </select>
+            <p class="field-error">Please select your branch.</p>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="service_type">Service Type *</label>
+            <select id="service_type" name="service_type" required>
+              <option value="">Select…</option>
+              <option value="Permanent">Permanent (full-time)</option>
+              <option value="Reserve">Reserve (part-time)</option>
+              <option value="National Service">National Service</option>
+            </select>
+            <p class="field-error">Please select your service type.</p>
+          </div>
+          <div class="field">
+            <label for="rank_at_discharge">Rank at Discharge <span class="opt">(optional)</span></label>
+            <input type="text" id="rank_at_discharge" name="rank_at_discharge" placeholder="e.g. Corporal, PTE, FSGT">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="enlistment_date">Enlistment Date *</label>
+            <input type="date" id="enlistment_date" name="enlistment_date" required>
+            <p class="field-error">Enlistment date is required.</p>
+          </div>
+          <div class="field">
+            <label for="discharge_date">Discharge Date <span class="opt">(optional)</span></label>
+            <input type="date" id="discharge_date" name="discharge_date">
+            <p class="field-hint">Leave blank if still serving.</p>
+          </div>
+        </div>
+
+        <hr class="section-divider">
+        <div class="step-header" style="border-bottom:none; margin-bottom: 16px; padding-bottom:0;">
+          <h2 class="step-title" style="font-size:1.2rem;">Deployments</h2>
+          <p class="step-desc">List any operational deployments (e.g. Afghanistan, East Timor).</p>
+        </div>
+        <div class="dynamic-list" id="deploymentList"></div>
+        <button type="button" class="btn-add-more" onclick="addItem('deployment')">+ Add Deployment</button>
+
+        <hr class="section-divider">
+        <div class="step-header" style="border-bottom:none; margin-bottom: 16px; padding-bottom:0;">
+          <h2 class="step-title" style="font-size:1.2rem;">Postings</h2>
+          <p class="step-desc">List significant bases or units you were posted to.</p>
+        </div>
+        <div class="dynamic-list" id="postingList"></div>
+        <button type="button" class="btn-add-more" onclick="addItem('posting')">+ Add Posting</button>
+      </div>
+
+      <!-- ── STEP 3: Your Claim ── -->
+      <div class="step" data-step="3">
+        <div class="step-header">
+          <p class="step-label">Step 3 of 6</p>
+          <h2 class="step-title">Your Claim</h2>
+          <p class="step-desc">Tell us about the conditions you'd like to claim and any existing DVA history.</p>
+        </div>
+
+        <div class="field">
+          <label for="dva_file_number">DVA File Number <span class="opt">(if known)</span></label>
+          <input type="text" id="dva_file_number" name="dva_file_number" placeholder="e.g. N/XXX/XXXXX">
+          <p class="field-hint">You can find this on any previous DVA correspondence.</p>
+        </div>
+
+        <div class="field">
+          <label>Have you previously submitted any DVA claims? *</label>
+          <div class="radio-group inline">
+            <label class="radio-opt">
+              <input type="radio" name="has_previous_claims" value="yes" onchange="toggleConditional('previous_claims_detail', true)"> Yes
+            </label>
+            <label class="radio-opt">
+              <input type="radio" name="has_previous_claims" value="no" onchange="toggleConditional('previous_claims_detail', false)"> No
+            </label>
+          </div>
+          <div class="conditional" id="previous_claims_detail">
+            <div class="field" style="margin-top:12px; margin-bottom:0;">
+              <label for="previous_dva_claims">Briefly describe your previous claim(s)</label>
+              <textarea id="previous_dva_claims" name="previous_dva_claims" placeholder="e.g. PTSD claim lodged 2018, knee injury 2020…" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="conditions_claimed">Conditions You Wish to Claim *</label>
+          <textarea id="conditions_claimed" name="conditions_claimed" placeholder="List each condition on a new line, e.g.&#10;PTSD&#10;Tinnitus&#10;Lower back injury" rows="5" required></textarea>
+          <p class="field-hint">Include all physical and mental health conditions related to your service.</p>
+          <p class="field-error">Please list at least one condition.</p>
+        </div>
+
+        <div class="field">
+          <label for="legislation">Legislation Preference <span class="opt">(optional)</span></label>
+          <select id="legislation" name="legislation">
+            <option value="">Not sure — AVC will advise</option>
+            <option value="MRCA">MRCA (Military Rehabilitation and Compensation Act)</option>
+            <option value="DRCA">DRCA (Defence-related Claims Act)</option>
+            <option value="VEA">VEA (Veterans' Entitlements Act)</option>
+          </select>
+          <p class="field-hint">AVC will determine the best legislation if you're unsure.</p>
+        </div>
+      </div>
+
+      <!-- ── STEP 4: Medical History ── -->
+      <div class="step" data-step="4">
+        <div class="step-header">
+          <p class="step-label">Step 4 of 6</p>
+          <h2 class="step-title">Medical History</h2>
+          <p class="step-desc">Your current GP details and treatment history.</p>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="current_gp_name">GP Name *</label>
+            <input type="text" id="current_gp_name" name="current_gp_name" placeholder="Dr. Jane Smith" required>
+            <p class="field-error">GP name is required.</p>
+          </div>
+          <div class="field">
+            <label for="current_gp_clinic">GP Clinic / Practice <span class="opt">(optional)</span></label>
+            <input type="text" id="current_gp_clinic" name="current_gp_clinic" placeholder="Suburb Medical Centre">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="current_gp_phone">GP Phone <span class="opt">(optional)</span></label>
+            <input type="tel" id="current_gp_phone" name="current_gp_phone" placeholder="08 XXXX XXXX">
+          </div>
+          <div class="field">
+            <label for="current_gp_address">GP Address <span class="opt">(optional)</span></label>
+            <input type="text" id="current_gp_address" name="current_gp_address" placeholder="Street, suburb">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Are you currently receiving mental health treatment? *</label>
+          <div class="radio-group inline">
+            <label class="radio-opt">
+              <input type="radio" name="currently_receiving_treatment" value="yes" onchange="toggleConditional('treatment_details', true)"> Yes
+            </label>
+            <label class="radio-opt">
+              <input type="radio" name="currently_receiving_treatment" value="no" onchange="toggleConditional('treatment_details', false)"> No
+            </label>
+          </div>
+          <div class="conditional" id="treatment_details">
+            <div class="field-row" style="margin-top:12px;">
+              <div class="field" style="margin-bottom:0;">
+                <label for="treatment_provider">Provider / Clinic Name</label>
+                <input type="text" id="treatment_provider" name="treatment_provider" placeholder="e.g. The Nicholas Clinic">
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label for="treatment_specialty">Specialty</label>
+                <input type="text" id="treatment_specialty" name="treatment_specialty" placeholder="e.g. Psychiatrist, Psychologist">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="current_medications">Current Medications <span class="opt">(optional)</span></label>
+          <textarea id="current_medications" name="current_medications" placeholder="List any medications you're currently prescribed, one per line" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="referred_specialists">Other Specialists <span class="opt">(optional)</span></label>
+          <textarea id="referred_specialists" name="referred_specialists" placeholder="Any other specialists you're currently seeing (e.g. audiologist, physio, orthopaedic surgeon)" rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- ── STEP 5: Daily Life & Work ── -->
+      <div class="step" data-step="5">
+        <div class="step-header">
+          <p class="step-label">Step 5 of 6</p>
+          <h2 class="step-title">Daily Life & Work</h2>
+          <p class="step-desc">Help us understand how your conditions are affecting you day to day.</p>
+        </div>
+
+        <div class="field">
+          <label for="mental_health_rating">How would you rate your mental health right now? *</label>
+          <select id="mental_health_rating" name="mental_health_rating" required>
+            <option value="">Select…</option>
+            <option value="1">1 — Very poor</option>
+            <option value="2">2 — Poor</option>
+            <option value="3">3 — Fair</option>
+            <option value="4">4 — Moderate</option>
+            <option value="5">5 — Good</option>
+            <option value="6">6 — Very good</option>
+            <option value="7">7 — Excellent</option>
+          </select>
+          <p class="field-error">Please select a rating.</p>
+        </div>
+
+        <div class="field">
+          <label for="functional_impact">How do your conditions affect your daily life? *</label>
+          <textarea id="functional_impact" name="functional_impact" placeholder="Describe how your conditions impact your sleep, relationships, social activities, self-care, and any daily tasks you find difficult." rows="5" required></textarea>
+          <p class="field-error">Please describe the impact on your daily life.</p>
+        </div>
+
+        <div class="field">
+          <label for="employment_status">Current Employment Status *</label>
+          <select id="employment_status" name="employment_status" required>
+            <option value="">Select…</option>
+            <option value="Full-time employed">Full-time employed</option>
+            <option value="Part-time employed">Part-time employed</option>
+            <option value="Casual employed">Casual employed</option>
+            <option value="Self-employed">Self-employed</option>
+            <option value="Unemployed">Unemployed</option>
+            <option value="Unable to work due to injury/illness">Unable to work due to injury/illness</option>
+            <option value="Retired">Retired</option>
+          </select>
+          <p class="field-error">Please select your employment status.</p>
+        </div>
+
+        <div class="field">
+          <label for="employment_capacity">How do your conditions affect your ability to work? <span class="opt">(optional)</span></label>
+          <textarea id="employment_capacity" name="employment_capacity" placeholder="Describe any limitations on the type of work you can do, hours you can work, or difficulties you experience at work." rows="4"></textarea>
+        </div>
+      </div>
+
+      <!-- ── STEP 6: Finish Up ── -->
+      <div class="step" data-step="6">
+        <div class="step-header">
+          <p class="step-label">Step 6 of 6</p>
+          <h2 class="step-title">Finish Up</h2>
+          <p class="step-desc">Almost done. Just a few final details.</p>
+        </div>
+
+        <div class="field">
+          <label>Supporting evidence you currently have <span class="opt">(tick all that apply)</span></label>
+          <div class="check-group" id="evidenceChecks">
+            <label class="check-opt"><input type="checkbox" name="supporting_evidence" value="Service records"> Service records</label>
+            <label class="check-opt"><input type="checkbox" name="supporting_evidence" value="Medical reports"> Medical reports / specialist letters</label>
+            <label class="check-opt"><input type="checkbox" name="supporting_evidence" value="GP referral"> GP referral letter</label>
+            <label class="check-opt"><input type="checkbox" name="supporting_evidence" value="Imaging results"> Imaging results (X-rays, MRI, CT scans)</label>
+            <label class="check-opt"><input type="checkbox" name="supporting_evidence" value="Previous DVA correspondence"> Previous DVA correspondence</label>
+            <label class="check-opt"><input type="checkbox" name="supporting_evidence" value="Buddy statements"> Buddy / witness statements</label>
+            <label class="check-opt"><input type="checkbox" name="supporting_evidence" value="None yet"> None yet</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="financial_situation">Financial situation <span class="opt">(optional)</span></label>
+          <textarea id="financial_situation" name="financial_situation" placeholder="Briefly describe your current financial situation if it's relevant to your claim, e.g. unable to work, relying on welfare, financial hardship." rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="additional_info">Anything else you'd like us to know? <span class="opt">(optional)</span></label>
+          <textarea id="additional_info" name="additional_info" placeholder="Any other information that might be relevant to your claim." rows="4"></textarea>
+        </div>
+
+        <div class="consent-block">
+          <p>By submitting this form, I confirm that the information provided is true and accurate to the best of my knowledge. I consent to Australian Veteran Centre using this information to assess and assist with my DVA compensation claim. I understand my information will be handled in accordance with Australian privacy law.</p>
+          <label class="check-opt">
+            <input type="checkbox" id="consent" name="consent" required>
+            <span>I agree to the above declaration *</span>
+          </label>
+        </div>
+
+        <div class="form-nav">
+          <button type="button" class="btn-back" id="backBtn" onclick="prevStep()">← Back</button>
+          <button type="button" class="btn-next" id="submitBtn" onclick="submitForm()">Submit Form</button>
+        </div>
+      </div>
+
+      <!-- ── SUCCESS ── -->
+      <div class="step" id="successStep">
+        <div class="success-screen">
+          <div class="success-icon">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 16l7 7 13-13" stroke="white" stroke-width="2.5" stroke-linecap="square"/>
+            </svg>
+          </div>
+          <h2>Form Received</h2>
+          <p>Thank you. Your intake form has been submitted successfully to the Australian Veteran Centre team.</p>
+          <p>We will review your information and be in touch shortly. If you have any questions in the meantime, please don't hesitate to contact us.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    © Australian Veteran Centre. Your information is kept strictly confidential.
+  </footer>
+
+  <script>
+    const WEBHOOK_URL = 'https://jeromey.app.n8n.cloud/webhook/avc-intake-form';
+    const TOTAL_STEPS = 6;
+    let currentStep = 1;
+
+    // Pre-fill email from URL param
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('email')) {
+      document.getElementById('email').value = urlParams.get('email');
+    }
+    if (urlParams.get('name')) {
+      document.getElementById('full_name').value = urlParams.get('name');
+    }
+
+    // Progress bar init
+    const progressSteps = document.getElementById('progressSteps');
+    for (let i = 1; i <= TOTAL_STEPS; i++) {
+      const d = document.createElement('div');
+      d.className = 'progress-step' + (i === 1 ? ' active' : '');
+      d.id = 'ps' + i;
+      progressSteps.appendChild(d);
+    }
+    updateProgress();
+
+    function updateProgress() {
+      for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const el = document.getElementById('ps' + i);
+        el.className = 'progress-step' + (i < currentStep ? ' done' : i === currentStep ? ' active' : '');
+      }
+      document.getElementById('progressLabel').textContent = `Step ${currentStep} of ${TOTAL_STEPS}`;
+    }
+
+    function showStep(n) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      const target = document.querySelector(`.step[data-step="${n}"]`);
+      if (target) target.classList.add('active');
+      document.getElementById('errorBanner').style.display = 'none';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateStep(n) {
+      const step = document.querySelector(`.step[data-step="${n}"]`);
+      let valid = true;
+
+      step.querySelectorAll('[required]').forEach(field => {
+        field.classList.remove('error');
+        let val = field.value.trim();
+
+        if (field.type === 'radio') return;
+        if (field.type === 'checkbox') {
+          if (!field.checked) {
+            field.classList.add('error');
+            valid = false;
+          }
+          return;
+        }
+
+        if (!val) {
+          field.classList.add('error');
+          valid = false;
+        }
+      });
+
+      // Radio required checks
+      const radioGroups = {};
+      step.querySelectorAll('input[type="radio"]').forEach(r => {
+        if (!radioGroups[r.name]) radioGroups[r.name] = false;
+        if (r.checked) radioGroups[r.name] = true;
+      });
+      for (const [name, checked] of Object.entries(radioGroups)) {
+        const radios = step.querySelectorAll(`input[name="${name}"]`);
+        radios.forEach(r => r.classList.remove('error'));
+        if (!checked) {
+          valid = false;
+          radios.forEach(r => r.classList.add('error'));
+        }
+      }
+
+      if (!valid) {
+        const banner = document.getElementById('errorBanner');
+        banner.textContent = 'Please fill in all required fields before continuing.';
+        banner.style.display = 'block';
+        const firstError = step.querySelector('.error');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      return valid;
+    }
+
+    function nextStep() {
+      if (!validateStep(currentStep)) return;
+      currentStep++;
+      updateProgress();
+      showStep(currentStep);
+      renderNavButtons();
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateProgress();
+        showStep(currentStep);
+        renderNavButtons();
+      }
+    }
+
+    function renderNavButtons() {
+      const backBtn = document.getElementById('backBtn');
+      if (backBtn) backBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+    }
+
+    // Initial button state
+    renderNavButtons();
+
+    // Wire Next buttons on steps 1–5
+    document.querySelectorAll('.step[data-step]').forEach(step => {
+      const n = parseInt(step.dataset.step);
+      if (n < TOTAL_STEPS) {
+        const nav = document.createElement('div');
+        nav.className = 'form-nav';
+        nav.innerHTML = `
+          <button type="button" class="btn-back" onclick="prevStep()" style="visibility:${n===1?'hidden':'visible'}">← Back</button>
+          <button type="button" class="btn-next" onclick="nextStep()">Next →</button>
+        `;
+        step.appendChild(nav);
+      }
+    });
+
+    // Dynamic deployments / postings
+    function addItem(type) {
+      const listId = type === 'deployment' ? 'deploymentList' : 'postingList';
+      const list = document.getElementById(listId);
+      const idx = list.children.length;
+      const placeholder = type === 'deployment'
+        ? 'e.g. Operation Slipper, Afghanistan 2010–2011'
+        : 'e.g. 1RAR, Lavarack Barracks, 2008–2012';
+      const div = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.innerHTML = `
+        <input type="text" name="${type}s" placeholder="${placeholder}">
+        <button type="button" class="btn-remove" onclick="this.parentElement.remove()" title="Remove">×</button>
+      `;
+      list.appendChild(div);
+    }
+
+    // Conditional reveal
+    function toggleConditional(id, show) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('visible', show);
+    }
+
+    // Clear field errors on input
+    document.addEventListener('input', e => {
+      if (e.target.classList.contains('error')) e.target.classList.remove('error');
+    });
+    document.addEventListener('change', e => {
+      if (e.target.classList.contains('error')) e.target.classList.remove('error');
+    });
+
+    // Collect form data
+    function collectFormData() {
+      const val = id => (document.getElementById(id)?.value || '').trim();
+
+      const deployments = Array.from(document.querySelectorAll('input[name="deployments"]'))
+        .map(i => i.value.trim()).filter(Boolean);
+      const postings = Array.from(document.querySelectorAll('input[name="postings"]'))
+        .map(i => i.value.trim()).filter(Boolean);
+      const previous_dva_claims = val('previous_dva_claims')
+        ? [val('previous_dva_claims')] : [];
+      const conditions_raw = val('conditions_claimed');
+      const conditions_claimed = conditions_raw
+        ? conditions_raw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const medications_raw = val('current_medications');
+      const current_medications = medications_raw
+        ? medications_raw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const specialists_raw = val('referred_specialists');
+      const referred_specialists = specialists_raw
+        ? specialists_raw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const supporting_evidence = Array.from(
+        document.querySelectorAll('input[name="supporting_evidence"]:checked')
+      ).map(i => i.value);
+      const treatment_radio = document.querySelector('input[name="currently_receiving_treatment"]:checked');
+
+      return {
+        full_name: val('full_name'),
+        preferred_name: val('preferred_name') || null,
+        dob: val('dob') || null,
+        gender: val('gender') || null,
+        phone_mobile: val('phone_mobile') || null,
+        phone_home: val('phone_home') || null,
+        email: val('email'),
+        address: val('address') || null,
+        pmkeys: val('pmkeys') || null,
+        branch: val('branch') || null,
+        service_type: val('service_type') || null,
+        rank_at_discharge: val('rank_at_discharge') || null,
+        enlistment_date: val('enlistment_date') || null,
+        discharge_date: val('discharge_date') || null,
+        deployments,
+        postings,
+        dva_file_number: val('dva_file_number') || null,
+        previous_dva_claims,
+        conditions_claimed,
+        legislation: val('legislation') || null,
+        current_gp_name: val('current_gp_name') || null,
+        current_gp_clinic: val('current_gp_clinic') || null,
+        current_gp_phone: val('current_gp_phone') || null,
+        current_gp_address: val('current_gp_address') || null,
+        currently_receiving_treatment: treatment_radio?.value === 'yes',
+        treatment_provider: val('treatment_provider') || null,
+        treatment_specialty: val('treatment_specialty') || null,
+        current_medications,
+        referred_specialists,
+        mental_health_rating: val('mental_health_rating') || null,
+        functional_impact: val('functional_impact') || null,
+        employment_capacity: val('employment_capacity') || null,
+        employment_status: val('employment_status') || null,
+        supporting_evidence,
+        financial_situation: val('financial_situation') || null,
+        additional_info: val('additional_info') || null,
+      };
+    }
+
+    async function submitForm() {
+      if (!validateStep(6)) return;
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+      const data = collectFormData();
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+        // Show success
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('successStep').classList.add('active');
+        document.getElementById('progressSteps').style.display = 'none';
+        document.getElementById('progressLabel').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      } catch (err) {
+        btn.disabled = false;
+        btn.innerHTML = 'Submit Form';
+        const banner = document.getElementById('errorBanner');
+        banner.textContent = 'Submission failed. Please check your internet connection and try again. If the problem persists, contact AVC directly.';
+        banner.style.display = 'block';
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
