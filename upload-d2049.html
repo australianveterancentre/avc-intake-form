@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Your Form | Australian Veteran Centre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c8a951;
+      --navy: #1a1a2e;
+      --navy-mid: #16213e;
+      --white: #ffffff;
+      --grey-light: #f5f5f5;
+      --grey-mid: #666;
+      --danger: #e53e3e;
+      --success: #38a169;
+    }
+
+    body {
+      font-family: 'Hanken Grotesk', Arial, sans-serif;
+      background: var(--grey-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--navy);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    header img { height: 48px; }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 40px 36px;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    .card h1 {
+      font-family: 'Anton', sans-serif;
+      font-size: 26px;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: var(--grey-mid);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .greeting {
+      color: var(--navy);
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .drop-zone {
+      border: 2px dashed #ccc;
+      border-radius: 6px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--gold);
+      background: #fdf8ec;
+    }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .drop-zone .icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    .drop-zone .label {
+      font-size: 15px;
+      color: var(--navy);
+      font-weight: 600;
+    }
+    .drop-zone .sublabel {
+      font-size: 13px;
+      color: var(--grey-mid);
+      margin-top: 4px;
+    }
+    .file-name {
+      font-size: 14px;
+      color: var(--success);
+      font-weight: 600;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+
+    .error-msg {
+      color: var(--danger);
+      font-size: 14px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 4px;
+      padding: 14px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.88; }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .spinner {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+      color: var(--grey-mid);
+      font-size: 14px;
+    }
+    .spinner::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ccc;
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .success-screen .check {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+    .success-screen h2 {
+      font-family: 'Anton', sans-serif;
+      font-size: 24px;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+    .success-screen p {
+      margin-bottom: 0;
+    }
+
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      font-size: 12px;
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="images/avc-logo.png" alt="Australian Veteran Centre" onerror="this.style.display='none'" />
+</header>
+
+<main>
+  <div class="card">
+
+    <div id="upload-form">
+      <h1>Upload Your Completed Form</h1>
+      <p id="greeting-line" class="greeting" style="margin-bottom: 16px;"></p>
+      <p>Please upload your completed injury details form (D2049) below. Make sure you save the document before uploading.</p>
+
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="file-input" accept=".pdf,application/pdf" />
+        <div class="icon">📄</div>
+        <div class="label">Click to select your PDF, or drag and drop here</div>
+        <div class="sublabel">PDF files only · Max 20MB</div>
+        <div class="file-name" id="file-name"></div>
+      </div>
+
+      <div class="error-msg" id="error-msg"></div>
+
+      <button class="btn-submit" id="submit-btn" disabled>Upload Form</button>
+      <div class="spinner" id="spinner">Uploading your form…</div>
+    </div>
+
+    <div class="success-screen" id="success-screen">
+      <div class="check">✅</div>
+      <h2>Form Received</h2>
+      <p>Thank you — your completed form has been securely received by Australian Veteran Centre. Our team will be in touch with you shortly.</p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  Australian Veteran Centre &nbsp;|&nbsp; justin@australianveterancentre.com.au
+</footer>
+
+<script>
+  const WEBHOOK_URL = 'https://jeromey.app.n8n.cloud/webhook/avc-d2049-upload';
+  const MAX_SIZE_MB = 20;
+
+  // Read URL params
+  const params = new URLSearchParams(window.location.search);
+  const clientId = params.get('client_id') || '';
+  const clientName = params.get('name') ? decodeURIComponent(params.get('name')) : '';
+  const clientEmail = params.get('email') ? decodeURIComponent(params.get('email')) : '';
+
+  if (clientName) {
+    document.getElementById('greeting-line').textContent = 'Hi ' + clientName + ',';
+  }
+
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const fileNameEl = document.getElementById('file-name');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorMsg = document.getElementById('error-msg');
+  const spinner = document.getElementById('spinner');
+
+  let selectedFile = null;
+
+  function setError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = msg ? 'block' : 'none';
+  }
+
+  function setFile(file) {
+    if (!file) return;
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      setError('Please upload a PDF file only.');
+      selectedFile = null;
+      submitBtn.disabled = true;
+      fileNameEl.textContent = '';
+      return;
+    }
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      setError('File is too large. Maximum size is ' + MAX_SIZE_MB + 'MB.');
+      selectedFile = null;
+      submitBtn.disabled = true;
+      fileNameEl.textContent = '';
+      return;
+    }
+    setError('');
+    selectedFile = file;
+    fileNameEl.textContent = '✓ ' + file.name;
+    submitBtn.disabled = false;
+  }
+
+  fileInput.addEventListener('change', () => setFile(fileInput.files[0]));
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    setFile(e.dataTransfer.files[0]);
+  });
+
+  submitBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+    if (!clientId) { setError('Missing client information. Please use the link from your email.'); return; }
+
+    submitBtn.disabled = true;
+    spinner.style.display = 'block';
+    setError('');
+
+    const formData = new FormData();
+    formData.append('file', selectedFile, selectedFile.name);
+    formData.append('client_id', clientId);
+    formData.append('client_name', clientName);
+    formData.append('client_email', clientEmail);
+
+    try {
+      const resp = await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
+      const data = await resp.json().catch(() => ({}));
+      if (resp.ok && data.success !== false) {
+        document.getElementById('upload-form').style.display = 'none';
+        document.getElementById('success-screen').style.display = 'block';
+      } else {
+        throw new Error(data.message || 'Upload failed');
+      }
+    } catch (err) {
+      spinner.style.display = 'none';
+      submitBtn.disabled = false;
+      setError('Upload failed: ' + err.message + '. Please try again or contact us directly.');
+    }
+  });
+</script>
+
+</body>
+</html>
