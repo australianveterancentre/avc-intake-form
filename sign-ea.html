@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Your Engagement Agreement — Australian Veteran Centre</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:    #053F78;
+      --navy-dk: #032d56;
+      --red:     #780505;
+      --red-dk:  #5c0404;
+      --gold:    #C8A951;
+      --white:   #FFFFFF;
+      --off-white: #FAFAFA;
+      --light:   #F2F4F7;
+      --border:  #DDE2E8;
+      --black:   #1C2333;
+      --mid:     #64748B;
+      --green:   #1a7a3c;
+      --green-bg:#e8f5ee;
+      --radius:  10px;
+      --radius-sm: 7px;
+      --shadow:  0 2px 16px rgba(5,63,120,0.08);
+      --font:    'Hanken Grotesk', Arial, sans-serif;
+      --display: 'Anton', Impact, Arial, sans-serif;
+      --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--light);
+      color: var(--black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: var(--navy-dk);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .site-header img { height: 44px; width: auto; display: block; }
+    .site-header-text h1 {
+      font-family: var(--display);
+      color: var(--white);
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+    .site-header-text p {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+    .header-lock {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── PROGRESS STEPPER ── */
+    .stepper-wrap {
+      background: var(--navy);
+      padding: 20px 32px 24px;
+    }
+    .stepper {
+      display: flex;
+      align-items: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .step-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .step-node-bubble {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--display);
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      transition: all 0.35s;
+      letter-spacing: 0.03em;
+    }
+    .step-node.done .step-node-bubble {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+      font-size: 1rem;
+    }
+    .step-node.active .step-node-bubble {
+      background: var(--white);
+      border-color: var(--white);
+      color: var(--navy);
+    }
+    .step-node-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+      transition: color 0.35s;
+    }
+    .step-node.done .step-node-label,
+    .step-node.active .step-node-label { color: rgba(255,255,255,0.85); }
+    .step-connector {
+      flex: 1;
+      height: 2px;
+      background: rgba(255,255,255,0.12);
+      margin: 0 4px;
+      margin-bottom: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-connector.done::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--red);
+      opacity: 0.6;
+    }
+
+    @media (max-width: 540px) {
+      .stepper-wrap { padding: 16px 20px 20px; }
+      .step-node-label { display: none; }
+      .step-node-bubble { width: 28px; height: 28px; font-size: 0.75rem; }
+    }
+
+    /* ── MAIN ── */
+    main { flex: 1; padding: 36px 16px 64px; }
+
+    .form-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      max-width: 640px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    /* ── STEP BAND (header inside card) ── */
+    .step-band {
+      background: linear-gradient(135deg, var(--navy-dk) 0%, var(--navy) 100%);
+      padding: 28px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-band::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      pointer-events: none;
+    }
+    .step-band-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .step-band-title {
+      font-family: var(--display);
+      font-size: 1.85rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1.1;
+    }
+    .step-band-desc {
+      margin-top: 8px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    /* ── DOCUMENT SECTION ── */
+    .doc-section {
+      padding: 32px 32px 28px;
+      border-bottom: 2px solid var(--light);
+      background: var(--off-white);
+    }
+
+    .ea-letterhead {
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ea-org-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+    .ea-org-sub {
+      font-size: 11px;
+      color: var(--mid);
+      line-height: 1.6;
+    }
+    .ea-meta-block {
+      margin-top: 16px;
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--black);
+    }
+    .ea-re {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.5;
+    }
+
+    .ea-body {
+      font-size: 13px;
+      line-height: 1.85;
+      color: var(--black);
+    }
+    .ea-body p { margin-bottom: 12px; }
+    .ea-body p.salutation { margin-bottom: 14px; font-size: 14px; }
+    .ea-body h3 {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 20px 0 7px;
+    }
+    .ea-body ul {
+      margin: 0 0 12px 20px;
+      list-style: disc;
+    }
+    .ea-body li { margin-bottom: 4px; }
+    .ea-closing {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.85;
+    }
+    .ea-signatory {
+      font-weight: 700;
+      color: var(--navy);
+      margin-top: 4px;
+    }
+
+    /* ── SIGN SECTION ── */
+    .sign-section {
+      padding: 28px 32px 36px;
+    }
+
+    .section-subtitle {
+      font-family: var(--display);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .section-subtitle-desc {
+      font-size: 0.8rem;
+      color: var(--mid);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    /* Agreement checkbox */
+    .agree-box {
+      background: var(--light);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+    .agree-box:hover { border-color: var(--navy); }
+    .agree-box.checked { border-color: var(--navy); background: #EDF3FA; }
+    .agree-box input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--navy);
+    }
+    .agree-box label {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--black);
+      cursor: pointer;
+    }
+    .agree-box label strong { color: var(--navy); }
+
+    /* Signature area (shown after checkbox) */
+    #sigArea { display: none; }
+
+    /* Tabs */
+    .sig-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .sig-tab {
+      flex: 1;
+      padding: 10px 8px;
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      color: var(--mid);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .sig-tab:hover { border-color: var(--navy); color: var(--navy); }
+    .sig-tab.active {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    /* Canvas */
+    .canvas-wrap {
+      position: relative;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      overflow: hidden;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .canvas-wrap:focus-within,
+    .canvas-wrap:hover { border-color: #93B4D4; }
+    .canvas-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 148px;
+      cursor: crosshair;
+      touch-action: none;
+    }
+    .canvas-hint {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #C8D3DC;
+      pointer-events: none;
+      user-select: none;
+      text-align: center;
+    }
+    .canvas-clear {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-family: var(--font);
+      color: var(--mid);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .canvas-clear:hover { color: var(--black); border-color: #a0b3c8; }
+
+    /* Type input */
+    .type-wrap { display: none; }
+    .type-wrap input {
+      width: 100%;
+      padding: 16px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 26px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--black);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      background: var(--white);
+    }
+    .type-wrap input:focus {
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(5,63,120,0.1);
+      background: #FAFCFF;
+    }
+    .type-wrap input::placeholder {
+      font-family: var(--font);
+      font-style: normal;
+      font-size: 14px;
+      color: #C8D3DC;
+    }
+
+    .sig-name-row {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .sig-name-row span { font-size: 12px; color: var(--mid); }
+    .sig-name-row strong { font-size: 13px; color: var(--black); }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--display);
+      font-size: 16px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .submit-btn:hover:not(:disabled) { background: var(--red-dk); }
+    .submit-btn:disabled { background: var(--mid); cursor: not-allowed; }
+
+    .error-msg {
+      display: none;
+      background: #fff0f0;
+      border: 1.5px solid #f5c0c0;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--red);
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* ── SUCCESS SCREEN ── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 32px;
+    }
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--green-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 28px;
+      color: var(--green);
+    }
+    .success-screen h2 {
+      font-family: var(--display);
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .success-screen p {
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.65;
+      max-width: 400px;
+      margin: 0 auto 10px;
+    }
+    .success-ref {
+      display: inline-block;
+      margin-top: 14px;
+      background: var(--light);
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 12px;
+      color: var(--mid);
+      letter-spacing: 0.04em;
+    }
+    .success-ref strong { color: var(--navy); }
+
+    /* ── FOOTER ── */
+    .card-footer {
+      background: var(--navy);
+      padding: 18px 32px;
+      text-align: center;
+    }
+    .card-footer p {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.6;
+    }
+
+    /* ── SPINNER ── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .site-header { padding: 14px 20px; }
+      .site-header img { height: 38px; }
+      .step-band { padding: 22px 20px; }
+      .step-band-title { font-size: 1.5rem; }
+      .doc-section { padding: 22px 18px 18px; }
+      .sign-section { padding: 22px 18px 28px; }
+      .card-footer { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Site header -->
+<header class="site-header">
+  <img src="https://images.squarespace-cdn.com/content/v1/691e619de2449a38cba0ea8c/4042ff94-c794-4477-bcf8-2bb8f225798b/2.png" alt="Australian Veteran Centre">
+  <div class="site-header-text">
+    <h1>Australian Veteran Centre</h1>
+    <p>Secure Document Signing</p>
+  </div>
+  <div class="header-lock">&#128274; Encrypted</div>
+</header>
+
+<!-- Progress stepper -->
+<div class="stepper-wrap">
+  <div class="stepper">
+    <div class="step-node done">
+      <div class="step-node-bubble">&#10003;</div>
+      <div class="step-node-label">Intake Form</div>
+    </div>
+    <div class="step-connector done"></div>
+    <div class="step-node active">
+      <div class="step-node-bubble">2</div>
+      <div class="step-node-label">Sign Agreement</div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="form-card">
+
+    <!-- Step band -->
+    <div class="step-band">
+      <div class="step-band-label">Step 2 of 2 &mdash; Onboarding</div>
+      <div class="step-band-title">Sign Your<br>Engagement Agreement</div>
+      <div class="step-band-desc">Please read the agreement below in full, then tick the checkbox and provide your electronic signature.</div>
+    </div>
+
+    <div id="mainView">
+
+      <!-- ── EA Document ── -->
+      <div class="doc-section">
+
+        <div class="ea-letterhead">
+          <div class="ea-org-name">Australian Veteran Centre</div>
+          <div class="ea-org-sub">
+            Zizka Pty Ltd Trading as Australian Veteran Centre
+            &nbsp;&middot;&nbsp; info@australianveterancentre.com.au
+            &nbsp;&middot;&nbsp; 0420 310 954
+          </div>
+          <div class="ea-meta-block">
+            <div>Date: <span id="eaDate"></span></div>
+            <div>Client Name: <strong id="eaName"></strong></div>
+            <div>Address: <span id="eaAddress"></span></div>
+          </div>
+          <div class="ea-re">Re: Engagement Agreement for Veteran Advocacy and Support Services</div>
+        </div>
+
+        <div class="ea-body">
+          <p class="salutation">Dear <span id="eaFirstName"></span>,</p>
+
+          <p>Thank you for choosing the Australian Veteran Centre (AVC) to assist you with your Department of Veterans' Affairs (DVA) and Commonwealth Superannuation Corporation (CSC) matters. This letter sets out the scope of our services, terms of engagement, and your rights and responsibilities.</p>
+
+          <h3>1. Scope of Services</h3>
+          <p>AVC will act as your authorised advocate and representative for:</p>
+          <ul>
+            <li>DVA Initial Liability and Permanent Impairment claims</li>
+            <li>CSC matters relating to invalidity classifications, medical reviews, reclassifications, and associated entitlements</li>
+            <li>Gathering evidence, preparing submissions, and managing your claim</li>
+            <li>Liaising with DVA, CSC, and medical providers on your behalf</li>
+          </ul>
+          <p>We do not provide medical, legal, or financial planning advice. If specialist input is needed, we will refer you to the appropriate professionals.</p>
+
+          <h3>2. Engagement Period</h3>
+          <p>This engagement commences on <span id="eaDate2"></span> and continues until:</p>
+          <ul>
+            <li>Your claim and/or appeal process concludes, or</li>
+            <li>Either party terminates the engagement in accordance with Section 6 below.</li>
+          </ul>
+
+          <h3>3. Fees and Payment</h3>
+          <p>Our service fee is <strong>4.5%</strong> of:</p>
+          <ul>
+            <li>Any Permanent Impairment lump-sum payments made by DVA, and</li>
+            <li>Any CSC back-pay entitlements arising from DVA liability decisions.</li>
+          </ul>
+          <p>AVC does not charge fees on dependant benefits or family-member entitlements.</p>
+          <p><strong>When payment occurs:</strong> You will receive an invoice before your compensation or back-pay is released. Payment is due within 7 days of receiving funds.</p>
+          <p>If you end the engagement before DVA accepts liability, AVC may charge a reasonable fee for the work completed to that point.</p>
+          <p>If you end the engagement after your claim reaches the Permanent Impairment assessment stage and prior to a Permanent Impairment determination, the 4.5% fee (excluding GST) remains payable after determination, as the work required to reach that stage has already been completed.</p>
+          <p>All fees are subject to GST.</p>
+
+          <h3>4. Confidentiality and Privacy</h3>
+          <p>We maintain strict confidentiality of all information provided during this engagement. Information will only be disclosed:</p>
+          <ul>
+            <li>With your written consent,</li>
+            <li>As required by law, or</li>
+            <li>As necessary to fulfil our obligations to DVA, CSC, or medical providers.</li>
+          </ul>
+          <p>All client records are securely stored in accordance with the Privacy Act 1988 (Cth).</p>
+
+          <h3>5. Limitation of Liability</h3>
+          <p>While all reasonable care will be taken in representing you, our total liability for any claim arising from this engagement — whether in contract, tort, or otherwise — shall be limited to the total amount of fees paid for our services. We are not liable for delays or decisions made by DVA, CSC, or other agencies beyond our control.</p>
+
+          <h3>6. Termination</h3>
+          <p>Either party may terminate this agreement by providing 30 days' written notice.</p>
+          <p>Upon termination for any other reason, you remain liable for fees due for work completed prior to the termination date.</p>
+
+          <h3>7. Independence and Conduct</h3>
+          <p>The Australian Veteran Centre is an independent, veteran-owned organisation. We are not affiliated with DVA, the Commonwealth Government, or any government body. Our role is to advocate for your interests professionally, ethically, and without conflict.</p>
+
+          <h3>8. Acceptance of Terms</h3>
+          <p>Please confirm your acceptance of these terms by signing below. If you have any questions about the terms or scope of this engagement, please contact us directly before signing.</p>
+          <p>We look forward to supporting you through your DVA and CSC processes.</p>
+
+          <div class="ea-closing">
+            <p>Kind regards,</p>
+            <p class="ea-signatory">Justin Caboche<br>Director, Australian Veteran Centre</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Signing Section ── -->
+      <div class="sign-section">
+        <div class="section-subtitle">Your Signature</div>
+        <div class="section-subtitle-desc">Tick the box to confirm you have read the agreement, then provide your electronic signature.</div>
+
+        <!-- Agreement checkbox -->
+        <div class="agree-box" id="agreeBox" onclick="toggleAgree()">
+          <input type="checkbox" id="agreeCheck" onclick="event.stopPropagation(); toggleAgree()">
+          <label for="agreeCheck" onclick="event.stopPropagation()">
+            I, <strong id="agreeNameLabel">[your name]</strong>, have read, understood, and agree to all terms and conditions in this Engagement Agreement. I confirm that my electronic signature below is legally binding under the Electronic Transactions Act 1999 (Cth).
+          </label>
+        </div>
+
+        <!-- Signature input (shown once agreed) -->
+        <div id="sigArea">
+          <div class="sig-tabs">
+            <button class="sig-tab active" id="tabDraw" onclick="setMode('draw')">&#9998; Draw Signature</button>
+            <button class="sig-tab" id="tabType" onclick="setMode('type')">Aa Type Signature</button>
+          </div>
+
+          <!-- Draw mode -->
+          <div id="drawWrap">
+            <div class="canvas-wrap" id="canvasWrap">
+              <canvas id="sigCanvas"></canvas>
+              <div class="canvas-hint" id="canvasHint">Sign here with your finger or mouse</div>
+              <button class="canvas-clear" type="button" onclick="clearCanvas()">Clear</button>
+            </div>
+          </div>
+
+          <!-- Type mode -->
+          <div class="type-wrap" id="typeWrap">
+            <input type="text" id="typeInput" placeholder="Type your full legal name" autocomplete="name" spellcheck="false">
+          </div>
+
+          <!-- Name confirmation -->
+          <div class="sig-name-row">
+            <span>Signing as:</span>
+            <strong id="sigNameDisplay"></strong>
+            <span>&nbsp;&middot;&nbsp;</span>
+            <span id="sigDateDisplay"></span>
+          </div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn" type="button" onclick="handleSubmit()">
+          Sign &amp; Submit Agreement
+        </button>
+        <div class="error-msg" id="errorMsg"></div>
+      </div>
+
+    </div><!-- /#mainView -->
+
+    <!-- ── Success Screen ── -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">&#10003;</div>
+      <h2>Agreement Signed</h2>
+      <p>Thank you, <strong id="successFirstName"></strong>. Your Engagement Agreement has been signed and securely recorded.</p>
+      <p>AVC will review your submission and be in touch with your next steps shortly.</p>
+      <div class="success-ref">
+        Signed on <strong id="successDate"></strong> &nbsp;&middot;&nbsp; Reference: <strong id="successRef"></strong>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <p>This document is legally binding under the Electronic Transactions Act 1999 (Cth) and applicable State and Territory Electronic Transactions Acts.<br>Your signature, full name, timestamp, and device information are securely recorded for AVC&rsquo;s records.</p>
+    </div>
+
+  </div><!-- /.form-card -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@5.1.3/dist/signature_pad.umd.min.js"></script>
+<script>
+  /* ── Config ── */
+  const WEBHOOK_URL = 'https://jeromey.app.n8n.cloud/webhook/avc-ea-sign';
+
+  /* ── URL params ── */
+  const params    = new URLSearchParams(window.location.search);
+  const cid       = params.get('cid')     || '';
+  const fullName  = (params.get('name')   || '').trim();
+  const email     = params.get('email')   || '';
+  const address   = params.get('address') || '';
+  const firstName = fullName.split(' ')[0] || fullName || 'there';
+  const todayStr  = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateParam = params.get('date') || todayStr;
+
+  /* ── Fill document fields ── */
+  document.getElementById('eaDate').textContent        = dateParam;
+  document.getElementById('eaDate2').textContent       = dateParam;
+  document.getElementById('eaName').textContent        = fullName  || '(name not provided)';
+  document.getElementById('eaAddress').textContent     = address   || '(address not provided)';
+  document.getElementById('eaFirstName').textContent   = firstName;
+  document.getElementById('agreeNameLabel').textContent = fullName || 'Client';
+  document.getElementById('sigNameDisplay').textContent = fullName || '—';
+  document.getElementById('sigDateDisplay').textContent = todayStr;
+  document.getElementById('successFirstName').textContent = firstName;
+  document.getElementById('successDate').textContent   = todayStr;
+  document.getElementById('successRef').textContent    = cid
+    ? 'AVC-' + cid.slice(0,8).toUpperCase()
+    : 'AVC-' + Date.now().toString(36).toUpperCase();
+
+  /* ── Agreement checkbox ── */
+  let agreed = false;
+
+  function toggleAgree() {
+    agreed = !agreed;
+    const checkbox = document.getElementById('agreeCheck');
+    const box      = document.getElementById('agreeBox');
+    const sigArea  = document.getElementById('sigArea');
+    checkbox.checked = agreed;
+    box.classList.toggle('checked', agreed);
+    sigArea.style.display = agreed ? 'block' : 'none';
+    if (agreed && currentMode === 'draw') requestAnimationFrame(initCanvas);
+  }
+
+  /* ── Signature pad ── */
+  const canvas = document.getElementById('sigCanvas');
+  let signaturePad = null;
+  let currentMode  = 'draw';
+  let canvasDirty  = false;
+
+  function initCanvas() {
+    if (!canvas.offsetWidth) { requestAnimationFrame(initCanvas); return; }
+    const ratio   = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width  = canvas.offsetWidth  * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(ratio, ratio);
+    if (signaturePad) {
+      signaturePad.clear();
+    } else {
+      signaturePad = new SignaturePad(canvas, {
+        minWidth: 1,
+        maxWidth: 3,
+        penColor: '#1C2333',
+        backgroundColor: 'rgba(0,0,0,0)'
+      });
+      signaturePad.addEventListener('beginStroke', () => {
+        document.getElementById('canvasHint').style.display = 'none';
+        canvasDirty = true;
+      });
+    }
+    canvasDirty = false;
+  }
+
+  window.addEventListener('resize', () => {
+    if (currentMode === 'draw' && agreed) initCanvas();
+  });
+
+  function clearCanvas() {
+    if (signaturePad) signaturePad.clear();
+    document.getElementById('canvasHint').style.display = 'block';
+    canvasDirty = false;
+  }
+
+  /* ── Tab switching ── */
+  function setMode(mode) {
+    currentMode = mode;
+    document.getElementById('tabDraw').classList.toggle('active', mode === 'draw');
+    document.getElementById('tabType').classList.toggle('active', mode === 'type');
+    document.getElementById('drawWrap').style.display = mode === 'draw' ? 'block' : 'none';
+    document.getElementById('typeWrap').style.display = mode === 'type' ? 'block' : 'none';
+    if (mode === 'draw') requestAnimationFrame(initCanvas);
+  }
+
+  /* ── Submit ── */
+  async function handleSubmit() {
+    hideError();
+
+    if (!agreed) {
+      showError('Please read the agreement and tick the checkbox above before signing.');
+      return;
+    }
+
+    let signatureData = '';
+
+    if (currentMode === 'draw') {
+      if (!signaturePad || signaturePad.isEmpty()) {
+        showError('Please draw your signature in the box above.');
+        return;
+      }
+      signatureData = signaturePad.toDataURL('image/png');
+    } else {
+      const typed = document.getElementById('typeInput').value.trim();
+      if (!typed) {
+        showError('Please type your full legal name as your signature.');
+        return;
+      }
+      signatureData = typed;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>&nbsp;Submitting…';
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cid,
+          name:           fullName,
+          email,
+          address,
+          signature_data: signatureData,
+          method:         currentMode,
+          signed_at:      new Date().toISOString(),
+          agreed:         true
+        })
+      });
+
+      if (!res.ok) throw new Error('Server returned ' + res.status);
+
+      document.getElementById('mainView').style.display     = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = 'Sign &amp; Submit Agreement';
+      showError('Submission failed — please check your internet connection and try again. If the problem persists, contact AVC at info@australianveterancentre.com.au');
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function hideError() {
+    document.getElementById('errorMsg').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
