@@ -58,11 +58,13 @@ button:disabled{background:#9CA3AF;cursor:not-allowed}
       </select>
 
       <label>D9325 PDF</label>
-      <label class="drop-zone" id="drop-zone">
-        <strong id="drop-label">Click to select PDF</strong>
-        <p>or drag and drop here</p>
-        <input type="file" id="pdf-input" accept=".pdf" onchange="handleFile(this)">
-      </label>
+      <div class="drop-zone" id="drop-zone">
+        <label for="pdf-input" style="display:block;cursor:pointer;width:100%;padding:0;margin:0">
+          <strong id="drop-label">Click to select PDF</strong>
+          <p>or drag and drop here</p>
+        </label>
+        <input type="file" id="pdf-input" accept=".pdf" onchange="handleFile(this)" style="display:none">
+      </div>
 
       <button id="submit-btn" onclick="submitForm()" disabled>Send Signing Link →</button>
       <div class="status" id="status"></div>
