@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>D9325 Upload — AVC Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hanken Grotesk',Arial,sans-serif;background:#F2F4F7;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{background:#fff;border-radius:8px;max-width:480px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.08);overflow:hidden}
+.card-header{background:#053F78;padding:22px 32px}
+.card-header img{height:44px;display:block}
+.card-body{padding:32px}
+h1{font-family:Anton,Impact,Arial,sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:0.04em;color:#053F78;margin-bottom:24px}
+label{display:block;font-size:12px;font-weight:700;color:#64748B;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px}
+input[type=password],select{width:100%;padding:10px 12px;border:1.5px solid #D1D5DB;border-radius:4px;font-size:14px;color:#1C2333;font-family:inherit;margin-bottom:20px;background:#fff;transition:border-color .15s}
+input[type=password]:focus,select:focus{outline:none;border-color:#053F78}
+.drop-zone{border:2px dashed #D1D5DB;border-radius:6px;padding:28px 20px;text-align:center;cursor:pointer;margin-bottom:20px;transition:all .15s;background:#FAFAFA}
+.drop-zone:hover,.drop-zone.drag-over{border-color:#053F78;background:#EEF4FF}
+.drop-zone.has-file{border-color:#053F78;background:#EEF4FF}
+.drop-zone p{font-size:13px;color:#64748B;margin-top:6px}
+.drop-zone strong{font-size:14px;color:#1C2333}
+input[type=file]{display:none}
+button{width:100%;padding:14px;background:#780505;color:#fff;border:none;border-radius:4px;font-family:Anton,Impact,Arial,sans-serif;font-size:14px;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+button:hover{background:#5a0404}
+button:disabled{background:#9CA3AF;cursor:not-allowed}
+.status{margin-top:16px;padding:12px 14px;border-radius:4px;font-size:13px;display:none;line-height:1.5}
+.status.success{background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0}
+.status.error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA}
+#gate{display:block}
+#form-area{display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <img src="images/logo-01.png" alt="Australian Veteran Centre">
+  </div>
+  <div class="card-body">
+
+    <!-- Password gate -->
+    <div id="gate">
+      <h1>Admin Access</h1>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter admin password" autocomplete="current-password">
+      <button onclick="checkPassword()">Continue</button>
+      <div class="status error" id="pw-error">Incorrect password. Please try again.</div>
+    </div>
+
+    <!-- Upload form -->
+    <div id="form-area">
+      <h1>Upload D9325 Form</h1>
+
+      <label for="client-select">Client</label>
+      <select id="client-select" onchange="updateBtn()">
+        <option value="">Loading clients...</option>
+      </select>
+
+      <label>D9325 PDF</label>
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('pdf-input').click()">
+        <strong id="drop-label">Click to select PDF</strong>
+        <p>or drag and drop here</p>
+        <input type="file" id="pdf-input" accept=".pdf" onchange="handleFile(this)">
+      </div>
+
+      <button id="submit-btn" onclick="submitForm()" disabled>Send Signing Link →</button>
+      <div class="status" id="status"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const CLIENTS_WEBHOOK = 'https://jeromey.app.n8n.cloud/webhook/d9325-clients';
+const UPLOAD_WEBHOOK  = 'https://jeromey.app.n8n.cloud/webhook/d9325-upload';
+const PW = 'L0uis333!';
+
+let selectedFile = null;
+
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function checkPassword() {
+  if (document.getElementById('password').value === PW) {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('form-area').style.display = 'block';
+    loadClients();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+  }
+}
+
+async function loadClients() {
+  const sel = document.getElementById('client-select');
+  try {
+    const res = await fetch(CLIENTS_WEBHOOK);
+    const clients = await res.json();
+    sel.innerHTML = '<option value="">Select a client…</option>';
+    clients.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.full_name;
+      sel.appendChild(opt);
+    });
+  } catch {
+    sel.innerHTML = '<option value="">Failed to load — refresh page</option>';
+  }
+}
+
+function handleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  selectedFile = file;
+  const zone = document.getElementById('drop-zone');
+  zone.classList.add('has-file');
+  document.getElementById('drop-label').textContent = '✓ ' + file.name;
+  updateBtn();
+}
+
+function updateBtn() {
+  const ready = document.getElementById('client-select').value && selectedFile;
+  document.getElementById('submit-btn').disabled = !ready;
+}
+
+// Drag and drop
+const zone = document.getElementById('drop-zone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type === 'application/pdf') {
+    selectedFile = file;
+    zone.classList.add('has-file');
+    document.getElementById('drop-label').textContent = '✓ ' + file.name;
+    updateBtn();
+  }
+});
+
+async function submitForm() {
+  const clientId = document.getElementById('client-select').value;
+  if (!clientId || !selectedFile) return;
+
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('status');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  status.style.display = 'none';
+
+  const formData = new FormData();
+  formData.append('client_id', clientId);
+  formData.append('file', selectedFile, selectedFile.name);
+
+  try {
+    const res = await fetch(UPLOAD_WEBHOOK, { method: 'POST', body: formData });
+    if (res.ok) {
+      status.className = 'status success';
+      status.textContent = 'Signing link sent to client successfully.';
+      status.style.display = 'block';
+      btn.textContent = 'Sent ✓';
+    } else {
+      throw new Error('Server error ' + res.status);
+    }
+  } catch (err) {
+    status.className = 'status error';
+    status.textContent = 'Something went wrong. Please try again.';
+    status.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Send Signing Link →';
+  }
+}
+</script>
+</body>
+</html>

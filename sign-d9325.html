@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sign Your D9325 — Australian Veteran Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Hanken Grotesk',Arial,sans-serif;background:#F2F4F7;color:#1C2333}
+header{background:#053F78;padding:16px 24px}
+header img{height:40px;display:block}
+.container{max-width:780px;margin:0 auto;padding:24px 16px 48px}
+.section{background:#fff;border-radius:8px;margin-bottom:20px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.07)}
+.section-header{background:#780505;padding:18px 24px}
+.section-header h2{font-family:Anton,Impact,Arial,sans-serif;font-size:18px;text-transform:uppercase;letter-spacing:0.06em;color:#FAFAFA}
+.section-body{padding:24px}
+/* PDF viewer */
+#pdf-container{width:100%;background:#e5e7eb;border-radius:4px;overflow-y:auto;max-height:70vh;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px}
+#pdf-container canvas{box-shadow:0 2px 8px rgba(0,0,0,0.2);max-width:100%;display:block}
+.pdf-loading{padding:40px;text-align:center;color:#64748B;font-size:14px}
+/* Signature */
+.sig-tabs{display:flex;gap:8px;margin-bottom:16px}
+.sig-tab{padding:8px 16px;border:1.5px solid #D1D5DB;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;color:#64748B;font-family:inherit;transition:all .15s}
+.sig-tab.active{border-color:#053F78;background:#EEF4FF;color:#053F78}
+canvas#sig-canvas{border:1.5px solid #D1D5DB;border-radius:4px;width:100%;height:120px;touch-action:none;display:block;cursor:crosshair}
+.sig-type-area{display:none}
+.sig-type-area input{width:100%;padding:14px 16px;border:1.5px solid #D1D5DB;border-radius:4px;font-family:Georgia,serif;font-style:italic;font-size:22px;color:#1C2333;outline:none}
+.sig-type-area input:focus{border-color:#053F78}
+.sig-actions{display:flex;gap:8px;margin-top:8px}
+.btn-clear{padding:8px 16px;border:1.5px solid #D1D5DB;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#64748B;font-family:inherit;text-transform:uppercase;letter-spacing:0.06em}
+.btn-clear:hover{border-color:#780505;color:#780505}
+.declaration{background:#F2F4F7;border-radius:6px;border-left:3px solid #053F78;padding:14px 16px;font-size:13px;color:#1C2333;line-height:1.65;margin-bottom:20px}
+button#submit-btn{width:100%;padding:16px;background:#780505;color:#fff;border:none;border-radius:4px;font-family:Anton,Impact,Arial,sans-serif;font-size:16px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:background .15s}
+button#submit-btn:hover{background:#5a0404}
+button#submit-btn:disabled{background:#9CA3AF;cursor:not-allowed}
+.status{margin-top:16px;padding:14px;border-radius:4px;font-size:14px;display:none;line-height:1.5;text-align:center}
+.status.success{background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0}
+.status.error{background:#FEF2F2;color:#991B1B;border:1px solid #FECACA}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="images/logo-01.png" alt="Australian Veteran Centre">
+</header>
+
+<div class="container">
+
+  <!-- Step 1: Review the form -->
+  <div class="section">
+    <div class="section-header"><h2>Step 1 — Review Your Form</h2></div>
+    <div class="section-body">
+      <p style="font-size:14px;color:#64748B;margin-bottom:12px;">Please read the D9325 form below before signing.</p>
+      <div id="pdf-container">
+        <div class="pdf-loading" id="pdf-loading">Loading form…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Sign -->
+  <div class="section">
+    <div class="section-header"><h2>Step 2 — Sign the Declaration</h2></div>
+    <div class="section-body">
+
+      <div class="declaration">
+        By signing below, you declare that the information provided in this form is complete and correct, and you authorise the Australian Veteran Centre to deal with DVA on your behalf.
+      </div>
+
+      <div class="sig-tabs">
+        <button class="sig-tab active" onclick="setMethod('draw',this)">Draw Signature</button>
+        <button class="sig-tab" onclick="setMethod('type',this)">Type Name</button>
+      </div>
+
+      <!-- Draw -->
+      <div id="draw-area">
+        <canvas id="sig-canvas"></canvas>
+        <div class="sig-actions">
+          <button class="btn-clear" onclick="clearCanvas()">Clear</button>
+        </div>
+      </div>
+
+      <!-- Type -->
+      <div class="sig-type-area" id="type-area">
+        <input type="text" id="typed-sig" placeholder="Type your full name" oninput="updateSubmitBtn()">
+      </div>
+
+      <br>
+      <button id="submit-btn" onclick="submitSignature()" disabled>Submit Signed Form →</button>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const SIGN_WEBHOOK = 'https://jeromey.app.n8n.cloud/webhook/d9325-sign';
+
+// Parse URL params
+const params = new URLSearchParams(window.location.search);
+const cid      = params.get('cid') || '';
+const pdfUrl   = params.get('pdf') || '';
+const name     = params.get('name') || '';
+const dateStr  = params.get('date') || '';
+
+// Load and render PDF
+if (pdfUrl) {
+  pdfjsLib.getDocument({ url: pdfUrl, withCredentials: false }).promise.then(pdf => {
+    document.getElementById('pdf-loading').remove();
+    const container = document.getElementById('pdf-container');
+    const renderPage = async (pageNum) => {
+      const page = await pdf.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      container.appendChild(canvas);
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    };
+    const renders = [];
+    for (let i = 1; i <= pdf.numPages; i++) renders.push(renderPage(i));
+    Promise.all(renders);
+  }).catch(err => {
+    document.getElementById('pdf-loading').textContent = 'Failed to load form. Please contact AVC.';
+    console.error(err);
+  });
+} else {
+  document.getElementById('pdf-loading').textContent = 'No form found. Please use the link from your email.';
+}
+
+// Signature canvas
+let sigMethod = 'draw';
+let drawing = false;
+let hasSig = false;
+const canvas = document.getElementById('sig-canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  ctx.strokeStyle = '#1C2333';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  const src = e.touches ? e.touches[0] : e;
+  return { x: src.clientX - r.left, y: src.clientY - r.top };
+}
+
+canvas.addEventListener('mousedown', e => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; updateSubmitBtn(); });
+canvas.addEventListener('mouseup', () => drawing = false);
+canvas.addEventListener('mouseleave', () => drawing = false);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); hasSig = true; updateSubmitBtn(); }, { passive: false });
+canvas.addEventListener('touchend', () => drawing = false);
+
+function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); hasSig = false; updateSubmitBtn(); }
+
+function setMethod(method, btn) {
+  sigMethod = method;
+  document.querySelectorAll('.sig-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('draw-area').style.display = method === 'draw' ? 'block' : 'none';
+  document.getElementById('type-area').style.display = method === 'type' ? 'block' : 'none';
+  updateSubmitBtn();
+}
+
+function updateSubmitBtn() {
+  const ready = sigMethod === 'draw' ? hasSig : document.getElementById('typed-sig').value.trim().length > 0;
+  document.getElementById('submit-btn').disabled = !ready;
+}
+
+async function submitSignature() {
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('status');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+  status.style.display = 'none';
+
+  let sigData = '';
+  if (sigMethod === 'draw') {
+    sigData = canvas.toDataURL('image/png');
+  } else {
+    sigData = document.getElementById('typed-sig').value.trim();
+  }
+
+  // Parse date
+  const now = new Date();
+  const day   = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year  = String(now.getFullYear());
+
+  const payload = {
+    cid,
+    name,
+    method: sigMethod,
+    signature_data: sigData,
+    day,
+    month,
+    year,
+    signed_date_str: `${day}/${month}/${year}`,
+  };
+
+  try {
+    const res = await fetch(SIGN_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      status.className = 'status success';
+      status.innerHTML = '<strong>Form submitted successfully.</strong><br>You will receive a confirmation email shortly.';
+      status.style.display = 'block';
+      btn.textContent = 'Submitted ✓';
+    } else {
+      throw new Error('Server error');
+    }
+  } catch {
+    status.className = 'status error';
+    status.textContent = 'Submission failed. Please check your connection and try again, or contact AVC.';
+    status.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Submit Signed Form →';
+  }
+}
+</script>
+</body>
+</html>
