@@ -643,7 +643,7 @@
           </ul>
 
           <h3>3. Fees and Payment</h3>
-          <p>Our service fee is <strong>4.5%</strong> of:</p>
+          <p>Our service fee is <strong><span id="eaCommission">4.5</span>%</strong> of:</p>
           <ul>
             <li>Any Permanent Impairment lump-sum payments made by DVA, and</li>
             <li>Any CSC back-pay entitlements arising from DVA liability decisions.</li>
@@ -651,7 +651,7 @@
           <p>AVC does not charge fees on dependant benefits or family-member entitlements.</p>
           <p><strong>When payment occurs:</strong> You will receive an invoice before your compensation or back-pay is released. Payment is due within 7 days of receiving funds.</p>
           <p>If you end the engagement before DVA accepts liability, AVC may charge a reasonable fee for the work completed to that point.</p>
-          <p>If you end the engagement after your claim reaches the Permanent Impairment assessment stage and prior to a Permanent Impairment determination, the 4.5% fee (excluding GST) remains payable after determination, as the work required to reach that stage has already been completed.</p>
+          <p>If you end the engagement after your claim reaches the Permanent Impairment assessment stage and prior to a Permanent Impairment determination, the <span id="eaCommission2">4.5</span>% fee (excluding GST) remains payable after determination, as the work required to reach that stage has already been completed.</p>
           <p>All fees are subject to GST.</p>
 
           <h3>4. Confidentiality and Privacy</h3>
@@ -760,18 +760,21 @@
   const WEBHOOK_URL = 'https://jeromey.app.n8n.cloud/webhook/avc-ea-sign';
 
   /* ── URL params ── */
-  const params    = new URLSearchParams(window.location.search);
-  const cid       = params.get('cid')     || '';
-  const fullName  = (params.get('name')   || '').trim();
-  const email     = params.get('email')   || '';
-  const address   = params.get('address') || '';
-  const firstName = fullName.split(' ')[0] || fullName || 'there';
-  const todayStr  = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-  const dateParam = params.get('date') || todayStr;
+  const params      = new URLSearchParams(window.location.search);
+  const cid         = params.get('cid')        || '';
+  const fullName    = (params.get('name')      || '').trim();
+  const email       = params.get('email')      || '';
+  const address     = params.get('address')    || '';
+  const commission  = params.get('commission') || '4.5';
+  const firstName   = fullName.split(' ')[0]   || fullName || 'there';
+  const todayStr    = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateParam   = params.get('date') || todayStr;
 
   /* ── Fill document fields ── */
   document.getElementById('eaDate').textContent        = dateParam;
   document.getElementById('eaDate2').textContent       = dateParam;
+  document.getElementById('eaCommission').textContent  = commission;
+  document.getElementById('eaCommission2').textContent = commission;
   document.getElementById('eaName').textContent        = fullName  || '(name not provided)';
   document.getElementById('eaAddress').textContent     = address   || '(address not provided)';
   document.getElementById('eaFirstName').textContent   = firstName;
