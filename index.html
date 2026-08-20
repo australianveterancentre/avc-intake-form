@@ -1346,18 +1346,44 @@
     };
   }
 
+  const DRAFT_KEY = 'avc_intake_draft_v1';
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  async function submitWithRetry(data, attempts = 3, delayMs = 1500) {
+    let lastErr;
+    for (let i = 0; i < attempts; i++) {
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        return;
+      } catch (err) {
+        lastErr = err;
+        if (i < attempts - 1) await sleep(delayMs);
+      }
+    }
+    throw lastErr;
+  }
+
   async function submitForm() {
     if (!validateStep(6)) return;
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>&nbsp;Submitting…';
+    const data = collectFormData();
+
+    // Save a local draft before attempting to send, so a failed submission
+    // doesn't cost someone their answers if they have to retry later.
     try {
-      const res = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(collectFormData())
-      });
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ data, savedAt: Date.now() }));
+    } catch (e) { /* storage unavailable — not fatal */ }
+
+    try {
+      btn.innerHTML = '<span class="spinner"></span>&nbsp;Submitting…';
+      await submitWithRetry(data);
+      try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
       document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
       document.getElementById('successStep').classList.add('active', 'anim-right');
       document.querySelector('.stepper-wrap').style.display = 'none';
@@ -1366,10 +1392,33 @@
       btn.disabled = false;
       btn.innerHTML = 'Submit Form';
       const banner = document.getElementById('errorBanner');
-      banner.textContent = 'Submission failed. Please check your internet connection and try again. If the problem persists, contact AVC directly.';
+      const subject = encodeURIComponent('AVC Intake Form — Submission Issue');
+      const body = encodeURIComponent(
+        `Hi AVC,\n\nI tried to submit my intake form online but it failed. My name is ${data.full_name || '[your name]'} and my email is ${data.email || '[your email]'}.\n\nPlease follow up with me directly.\n\nThanks.`
+      );
+      banner.innerHTML = 'Submission failed after several attempts. This is usually a network issue on your end (work or government networks sometimes block this). Please try again — on a different network if possible (e.g. mobile data instead of office wifi) — or ' +
+        `<a href="mailto:info@australianveterancentre.com.au?subject=${subject}&body=${body}">click here to email AVC directly</a> and we'll follow up with you. Your answers have been saved on this device, so you won't need to start over.`;
       banner.style.display = 'block';
     }
   }
+
+  // If a previous attempt on this device failed, quietly restore the answers
+  // into any still-empty fields so the client doesn't have to redo the whole form.
+  (function restoreDraftIfAny() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const { data, savedAt } = JSON.parse(raw);
+      if (Date.now() - savedAt > 7 * 24 * 60 * 60 * 1000) {
+        localStorage.removeItem(DRAFT_KEY);
+        return;
+      }
+      Object.entries(data).forEach(([key, value]) => {
+        const el = document.getElementById(key);
+        if (el && !el.value && typeof value === 'string') el.value = value;
+      });
+    } catch (e) { /* ignore malformed draft */ }
+  })();
 </script>
 </body>
 </html>
