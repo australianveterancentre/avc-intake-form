@@ -1250,7 +1250,31 @@
     direction = 'next';
     updateStepper();
     showStep(current, 'next');
+    saveProgress(current);
   }
+
+  // Best-effort save of whatever's been entered so far, so at minimum a
+  // client's name and email reach us even if they never finish the form.
+  // Fire-and-forget: never blocks navigation, never shown to the client.
+  const PROGRESS_URL = 'https://jeromey.app.n8n.cloud/webhook/avc-intake-progress';
+  function saveProgress(step) {
+    try {
+      const data = collectFormData();
+      if (!data.email || !data.full_name) return;
+      const payload = JSON.stringify({ ...data, last_step: step });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(PROGRESS_URL, new Blob([payload], { type: 'application/json' }));
+      } else {
+        fetch(PROGRESS_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+      }
+    } catch (e) { /* best-effort only */ }
+  }
+
+  // Also catch someone who closes/leaves the tab mid-step, without ever
+  // clicking Continue — sendBeacon is specifically designed to still fire here.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') saveProgress(current);
+  });
 
   function prevStep() {
     if (current > 1) {
