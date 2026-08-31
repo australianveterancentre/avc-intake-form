@@ -1257,10 +1257,19 @@
   // client's name and email reach us even if they never finish the form.
   // Fire-and-forget: never blocks navigation, never shown to the client.
   const PROGRESS_URL = 'https://jeromey.app.n8n.cloud/webhook/avc-intake-progress';
+  let lastProgressStep = null;
+  let lastProgressAt = 0;
   function saveProgress(step) {
     try {
+      // Throttle: skip if we already saved this exact step recently (e.g. someone
+      // repeatedly tabbing away and back). Still saves on every real step change,
+      // and re-saves the same step after a minute in case they've been editing it.
+      const now = Date.now();
+      if (step === lastProgressStep && now - lastProgressAt < 60000) return;
       const data = collectFormData();
       if (!data.email || !data.full_name) return;
+      lastProgressStep = step;
+      lastProgressAt = now;
       const payload = JSON.stringify({ ...data, last_step: step });
       if (navigator.sendBeacon) {
         navigator.sendBeacon(PROGRESS_URL, new Blob([payload], { type: 'application/json' }));
